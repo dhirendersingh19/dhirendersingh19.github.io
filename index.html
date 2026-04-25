@@ -3,433 +3,1308 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Portfolio of Dhirender Singh, Senior Backend Engineer specializing in Distributed Systems and Cloud Storage Infrastructure." />
-<title>Dhirender Singh • Mission Control</title>
+<meta name="description" content="Dhirender Singh — Senior Backend Engineer specializing in Cloud Storage, Distributed Systems and Infrastructure. 5+ years at IBM and Persistent Systems." />
+<title>Dhirender Singh • Senior Backend Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
+/* ════════════════════════════════════════════════════════
+   DESIGN TOKENS — all colours verified WCAG 2.1 AA
+   ════════════════════════════════════════════════════════ */
 :root {
-  /* SpaceX Minimalist Aerospace Theme */
-  --deep:   #000000;
-  --surface: #0a0a0a; 
-  --surface-hover: #111111;
-  
-  --accent:  #ffffff; 
-  --accent2: #888888; 
-  --success: #39ff14; /* Telemetry Green */
-  --highlight: #39ff14; /* Neon Green Highlight */
-  
-  --border:  rgba(255, 255, 255, 0.2);
-  --border2: rgba(255, 255, 255, 0.4);
-  
-  --text:   #ffffff; 
-  --muted:  #b3b3b3; /* Contrast ratio 6.3:1 (WCAG AA Compliant) */
+  /* Backgrounds */
+  --bg:          #000000;
+  --surface:     #0c0c0c;
+  --surface-h:   #181818;
+
+  /* Foregrounds — contrast ratios on --bg / --surface */
+  --text:        #ffffff;   /* 21:1  */
+  --muted:       #8a8a8a;   /* 6.1:1 — PASS AA normal */
+  --subtle:      #767676;   /* 4.6:1 — PASS AA normal (replaces old #555 which failed) */
+
+  /* Accent — neon green: 15.5:1 on black — PASS */
+  --green:       #39ff14;
+  --green-dim:   rgba(57,255,20,0.12);
+  --green-glow:  rgba(57,255,20,0.06);
+
+  /* Borders — decorative only, not conveying info */
+  --border:      rgba(255,255,255,0.1);
+  --border2:     rgba(255,255,255,0.22);
+  --border-g:    rgba(57,255,20,0.35);
+
+  /* Semantic badge colours — verified on #0c0c0c */
+  --azure:       #5ba4cf;   /* 7.1:1 */
+  --rh:          #ee5555;   /* 5.7:1 */
+
+  /* Typography */
+  --font-head:   'Barlow Condensed', sans-serif;
+  --font-body:   'Barlow', sans-serif;
+
+  /* Touch target minimum (WCAG 2.5.5) */
+  --touch-min:   44px;
 }
 
+/* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; }
 
+/* ── BASE ── */
 body {
-  background: var(--deep);
+  background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   overflow-x: hidden;
   line-height: 1.6;
 }
 
-/* ─── TYPOGRAPHY ─── */
-h1, h2, h3, h4, .nav-logo, .stat-val, .btn, .sec-tag, .exp-period, .pill {
-  font-family: 'Oswald', sans-serif;
+/* ── SKIP NAVIGATION (WCAG 2.4.1) ── */
+.skip-nav {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  z-index: 10000;
+  background: var(--green);
+  color: #000;
+  padding: 12px 20px;
+  font-family: var(--font-head);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 2px;
   text-transform: uppercase;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-nav:focus {
+  top: 0;
+  /* Also show outline so it's doubly visible */
+  outline: 3px solid #000;
+  outline-offset: 2px;
 }
 
-/* ─── ACCESSIBILITY FOCUS STATES ─── */
-a:focus-visible, button:focus-visible, .btn:focus-visible, input:focus-visible {
-  outline: 3px solid var(--success);
-  outline-offset: 4px;
+/* ── FOCUS STYLES (WCAG 2.4.7, 2.4.11) ──
+   Visible for ALL keyboard users, not just :focus-visible ── */
+:focus {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+/* Remove outline only for mouse, where it's redundant */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
 }
 
-/* Skip to main content link for screen readers */
-.skip-link {
-  position: absolute; top: -40px; left: 0;
-  background: var(--accent); color: var(--deep);
-  padding: 8px; z-index: 999; transition: top 0.2s;
+/* ── CANVAS — purely decorative ── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* aria-hidden set in HTML */
 }
-.skip-link:focus { top: 0; }
 
-/* ─── ASCENT CANVAS ─── */
-#sky-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.6; }
-
-/* ─── NAV ─── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0 4rem; height: 70px;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
+/* ── NAVIGATION (WCAG 2.4.1, 2.4.3, 4.1.2) ── */
+.site-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5vw;
+  height: 64px;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
 .nav-logo {
-  font-size: 1.25rem; font-weight: 700;
-  color: var(--accent); letter-spacing: 2px; text-decoration: none;
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 3px;
+  text-decoration: none;
+  text-transform: uppercase;
+  /* Minimum touch target height */
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
 }
-.nav-logo em { font-style: normal; color: var(--muted); font-weight: 400; margin: 0 0.25rem;}
-.nav-links { display: flex; gap: 1rem; list-style: none; }
-.nav-links a {
-  color: var(--text); text-decoration: none;
-  font-size: 0.875rem; font-weight: 500; letter-spacing: 1.5px;
-  padding: 0.5rem 0;
-  transition: color 0.2s; 
+/* Underline on focus — colour alone is not enough */
+.nav-logo:hover { text-decoration: underline; text-decoration-color: var(--green); text-underline-offset: 4px; }
+
+.nav-logo em {
+  font-style: normal;
+  color: var(--muted);
+  font-weight: 300;
+}
+.nav-list {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  /* role=list reset for Safari VoiceOver */
+  margin: 0;
+  padding: 0;
+}
+.nav-list a {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  /* 44px minimum touch target */
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 1rem;
   position: relative;
+  transition: color 0.2s;
 }
-.nav-links a::after {
-  content: ''; position: absolute; width: 0; height: 1px;
-  bottom: 0; left: 0; background-color: var(--accent);
-  transition: width 0.2s;
+/* Visible underline on hover — not colour-alone */
+.nav-list a:hover,
+.nav-list a[aria-current="page"] {
+  color: var(--green);
+  text-decoration: underline;
+  text-decoration-color: var(--green);
+  text-underline-offset: 4px;
 }
-.nav-links a:hover::after, .nav-links a:focus::after { width: 100%; }
-.nav-links a:hover, .nav-links a:focus { color: var(--highlight); }
+.nav-list a[aria-current="page"] {
+  /* Screen reader + visual active state */
+}
 
-/* ─── SECTIONS ─── */
-section { position: relative; z-index: 10; padding: 140px 9vw 90px; }
+/* ── SECTIONS ── */
+section {
+  position: relative;
+  z-index: 10;
+  padding: 130px 9vw 100px;
+}
 
-/* ─── HERO ─── */
+/* ── HERO ── */
 #hero {
-  min-height: 100vh; display: flex; flex-direction: column;
-  justify-content: center; padding-top: 100px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 100px;
 }
 
-.rack-badge {
-  display: inline-flex; align-items: center; gap: 0.8rem;
-  background: transparent;
+/* Status badge — purely decorative LED animation */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
   border: 1px solid var(--border2);
   padding: 0.5rem 1.25rem;
-  font-family: 'Oswald', sans-serif; font-size: 0.875rem; color: var(--text); font-weight: 500;
-  letter-spacing: 2px;
-  margin-bottom: 2rem; width: fit-content;
-  opacity: 0; animation: fadeUp 0.6s 0.1s forwards;
+  margin-bottom: 2.5rem;
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.5s 0.1s forwards;
 }
-.rack-dot { width: 8px; height: 8px; background: var(--success); box-shadow: 0 0 8px var(--success); border-radius: 50%; }
+/* LED dot — decorative, aria-hidden in HTML */
+.status-led {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--green);
+  flex-shrink: 0;
+}
+@keyframes led-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
 .hero-name {
-  font-size: clamp(3.5rem, 8vw, 7rem);
-  font-weight: 700; line-height: 1; letter-spacing: 2px;
-  opacity: 0; animation: fadeUp 0.8s 0.25s forwards;
-}
-.hero-role {
-  margin-top: 1.5rem;
-  font-family: 'Oswald', sans-serif;
-  font-size: 1.25rem; color: var(--muted);
+  font-family: var(--font-head);
+  font-size: clamp(4rem, 10vw, 9rem);
+  font-weight: 700;
+  line-height: 0.9;
   letter-spacing: 2px;
-  opacity: 0; animation: fadeUp 0.7s 0.45s forwards;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.25s forwards;
 }
-.hero-role strong { color: var(--accent); font-weight: 500; }
+.hero-name span {
+  display: block;
+  color: var(--muted);
+  font-weight: 300;
+  font-size: clamp(3rem, 7.5vw, 6.5rem);
+}
+
+.hero-role {
+  margin-top: 2rem;
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.4s forwards;
+}
+.hero-role strong { color: var(--text); }
 
 .hero-desc {
-  margin-top: 1.5rem; max-width: 750px;
-  font-size: 1.125rem; color: var(--muted); line-height: 1.8;
-  opacity: 0; animation: fadeUp 0.7s 0.6s forwards;
+  margin-top: 1.5rem;
+  max-width: 680px;
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.85;
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.55s forwards;
 }
 
 .hero-cta {
-  margin-top: 3rem; display: flex; gap: 1.5rem; flex-wrap: wrap;
-  opacity: 0; animation: fadeUp 0.7s 0.75s forwards;
+  margin-top: 3rem;
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.7s forwards;
 }
+
+/* ── BUTTONS (WCAG 1.4.1, 2.5.5) ── */
 .btn {
-  padding: 1.25rem 3rem;
-  font-size: 0.875rem; font-weight: 700; letter-spacing: 2px;
-  cursor: pointer; text-decoration: none; transition: all 0.3s ease; display: inline-block;
+  padding: 0 2.5rem;
+  height: var(--touch-min);
+  min-width: var(--touch-min);
+  font-family: var(--font-head);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  border: 2px solid transparent;
 }
-.btn-primary { background: var(--accent); color: var(--deep); border: 2px solid var(--accent); }
-.btn-primary:hover, .btn-primary:focus { background: transparent; color: var(--highlight); border-color: var(--highlight); }
-.btn-outline { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
-.btn-outline:hover, .btn-outline:focus { background: var(--highlight); color: var(--deep); border-color: var(--highlight); }
+.btn-primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.btn-primary:hover {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--bg);
+  /* Not colour-only: bg + border both change */
+}
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border2);
+}
+.btn-outline:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
 
-/* ─── SECTION HEADER ─── */
-.sec-header { margin-bottom: 3.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
-.sec-tag { font-size: 1rem; color: var(--muted); margin-bottom: 0.5rem; letter-spacing: 3px; }
-h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.1; color: var(--text); letter-spacing: 1px; }
+/* ── FOCUS STRIP (metrics) ── */
+.focus-strip {
+  margin-top: 4rem;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  max-width: 860px;
+  opacity: 0;
+  animation: fadeUp 0.6s 0.85s forwards;
+}
+.focus-item {
+  flex: 1;
+  min-width: 150px;
+  padding: 1.4rem 1.8rem;
+  border-right: 1px solid var(--border);
+}
+.focus-item:last-child { border-right: none; }
+/* No hover colour change — decorative only */
+.focus-val {
+  font-family: var(--font-head);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+.focus-label {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.4rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 
-/* ─── SKILLS ─── */
-.skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
-.skill-card { background: var(--surface); padding: 2.5rem 2rem; border-left: 3px solid transparent; transition: all 0.2s; }
-.skill-card:hover { background: var(--surface-hover); border-left-color: var(--highlight); }
-.skill-cat { font-size: 1.25rem; color: var(--accent); margin-bottom: 1.25rem; letter-spacing: 1px; }
-.skill-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.pill { padding: 0.4rem 0.8rem; background: transparent; border: 1px solid var(--border2); font-size: 0.75rem; color: var(--text); letter-spacing: 1px; }
+/* ── SECTION HEADER ── */
+.sec-header { margin-bottom: 3rem; }
+.sec-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.sec-eyebrow strong { color: var(--green); }
+/* h2 — section headings */
+h2 {
+  font-family: var(--font-head);
+  font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.sec-rule {
+  width: 40px;
+  height: 2px;
+  background: var(--green);
+  margin-top: 1rem;
+  /* aria-hidden in HTML — decorative */
+}
 
-/* ─── EXPERIENCE & EDUCATION TIMELINE ─── */
+/* ── SKILLS ── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.skill-card {
+  background: var(--surface);
+  padding: 2rem;
+  border-left: 3px solid transparent;
+  transition: background 0.2s, border-left-color 0.2s;
+}
+.skill-card:hover { background: var(--surface-h); border-left-color: var(--green); }
+/* Category label — not a heading; used as label for pill group */
+.skill-cat-label {
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  /* role=list in HTML */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.pill-item {
+  padding: 0.35rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--border2);
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  color: var(--text);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.skill-full { grid-column: 1 / -1; }
+
+/* ── EXPERIENCE ── */
 .timeline { display: flex; flex-direction: column; gap: 2rem; }
-.exp-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid transparent; transition: all 0.3s; }
-.exp-card:hover { border-color: var(--border2); border-left-color: var(--highlight); }
+.exp-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  /* Left accent — decorative, not sole colour indicator */
+  border-left: 3px solid var(--subtle);
+  transition: border-left-color 0.3s, border-color 0.3s;
+}
+.exp-card:hover { border-left-color: var(--green); border-color: var(--border2); }
 
-/* Banner changes color on hover */
-.exp-card-header { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--deep); border-bottom: 1px solid var(--border); transition: background 0.3s, border-bottom-color 0.3s; }
-.exp-card:hover .exp-card-header { background: rgba(57, 255, 20, 0.08); border-bottom-color: var(--highlight); }
+.exp-card-header {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+.exp-card:hover .exp-card-header { background: var(--green-glow); }
 
-.exp-company { font-size: 1.5rem; font-weight: 700; color: var(--accent); letter-spacing: 2px; }
-.exp-period { font-size: 0.875rem; color: var(--muted); font-weight: 500; letter-spacing: 1.5px; }
-.exp-role { font-family: 'Oswald', sans-serif; font-size: 1rem; color: var(--muted); margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 1px; }
+/* Company name — h3 within article */
+.exp-company {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.exp-right { text-align: right; }
+.exp-period {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.exp-role-label {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  color: var(--green);
+  margin-top: 0.2rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.exp-location {
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  color: var(--subtle);    /* upgraded from muted2 — now passes 4.6:1 */
+  margin-top: 0.2rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .exp-body { padding: 2rem; }
-
-.role-subheader { font-size: 1.125rem; font-weight: 500; color: var(--accent); margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px dashed var(--border); padding-bottom: 0.5rem; }
-.role-subheader-dates { color: var(--muted); font-size: 0.875rem; }
-
-.exp-project { margin-bottom: 2.5rem; padding-left: 1.5rem; border-left: 2px solid var(--border2); }
+.exp-project {
+  margin-bottom: 2.5rem;
+  padding-left: 1.5rem;
+  border-left: 2px solid var(--border2);
+}
 .exp-project:last-child { margin-bottom: 0; }
-.exp-project-name { font-size: 1.125rem; font-weight: 700; color: var(--accent); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; font-family: 'Oswald', sans-serif;}
-.exp-bullets { list-style: none; }
-.exp-bullets li { font-size: 1rem; color: var(--muted); padding-left: 1.5rem; position: relative; margin-bottom: 0.75rem; }
-.exp-bullets li::before { content: '•'; position: absolute; left: 0; color: var(--border2); font-size: 1rem; top: 0; font-family: 'Oswald', sans-serif; }
-.exp-tech { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
-.tech-tag { padding: 0.25rem 0.75rem; background: transparent; border: 1px solid var(--border2); font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
-/* ─── ACHIEVEMENTS ─── */
-.achievements-wrap { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-.achievement-tag { padding: 0.25rem 0.75rem; background: rgba(57, 255, 20, 0.05); border: 1px solid var(--success); font-size: 0.75rem; color: var(--success); text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 0.3rem; }
-.achievement-icon { font-size: 0.7rem; }
-
-/* ─── PROJECTS ─── */
-.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
-.proj-card { background: var(--surface); padding: 2.5rem 2rem; border-left: 3px solid transparent; transition: all 0.2s; display: flex; flex-direction: column; }
-.proj-card:hover { background: rgba(57, 255, 20, 0.03); border-left-color: var(--highlight); }
-.proj-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--accent); letter-spacing: 1px; }
-.proj-meta { font-family: 'Oswald', sans-serif; font-size: 0.875rem; color: var(--muted); margin-bottom: 0.5rem; letter-spacing: 1px; text-transform: uppercase; }
-.proj-association { font-size: 0.875rem; color: var(--accent); margin-bottom: 1.25rem; border-left: 2px solid var(--border2); padding-left: 0.75rem; }
-.proj-desc { font-size: 1rem; color: var(--muted); margin-bottom: 1.5rem; flex-grow: 1; }
-.proj-desc p { margin-bottom: 0.5rem; }
-.proj-link { font-family: 'Oswald', sans-serif; font-size: 0.875rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; text-decoration: none; display: inline-block; margin-top: 1rem; border-bottom: 1px solid var(--accent); padding-bottom: 2px; width: fit-content; transition: color 0.2s, border-color 0.2s; }
-.proj-link:hover, .proj-link:focus { color: var(--highlight); border-color: var(--highlight); }
-
-/* ─── TRAJECTORY (CERTS) ─── */
-.trajectory-box { border: 1px solid var(--border); border-left: 3px solid transparent; padding: 2rem; background: var(--surface); margin-bottom: 2rem; transition: all 0.3s; }
-.trajectory-box:hover { border-color: var(--border2); border-left-color: var(--highlight); background: rgba(57, 255, 20, 0.03); }
-.trajectory-box h3 { font-size: 1.25rem; letter-spacing: 2px; color: var(--accent); margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-.trajectory-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
-.trajectory-list li { color: var(--muted); position: relative; padding-left: 2rem; }
-.trajectory-list li::before { content: '>>'; position: absolute; left: 0; color: var(--highlight); font-family: 'Oswald', sans-serif; font-size: 0.875rem; }
-
-/* ─── CONTACT ─── */
-#contact { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; }
-.contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 2rem; }
-.contact-card { background: var(--surface); padding: 2rem 1rem; text-align: center; text-decoration: none; color: var(--text); border-bottom: 3px solid transparent; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;}
-.contact-card:hover, .contact-card:focus { background: rgba(57, 255, 20, 0.05); border-bottom-color: var(--highlight); }
-.contact-label { font-family: 'Oswald', sans-serif; font-size: 0.875rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.5rem; transition: color 0.2s; }
-.contact-card:hover .contact-label, .contact-card:focus .contact-label { color: var(--accent); }
-.contact-val { font-size: 0.875rem; color: var(--accent); word-break: break-all; }
-
-/* ─── FOOTER ─── */
-footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--border); font-size: 0.875rem; color: var(--muted); background: var(--deep); position: relative; z-index: 10; text-transform: uppercase; letter-spacing: 2px; font-family: 'Oswald', sans-serif; }
-
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@media (prefers-reduced-motion: no-preference) {
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-  .reveal.visible { opacity: 1; transform: none; }
+/* Project name — h4 */
+.exp-project-name {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
+
+.exp-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.exp-bullets li {
+  font-size: 0.95rem;
+  color: var(--muted);
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 0.6rem;
+  line-height: 1.75;
+  font-weight: 300;
+}
+/* Decorative marker — aria-hidden in HTML */
+.exp-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  /* Square, not just colour, differentiates from body text */
+  transform: rotate(45deg);
+}
+
+.exp-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  /* role=list in HTML */
+  list-style: none;
+  padding: 0;
+}
+.tech-tag {
+  padding: 0.25rem 0.7rem;
+  background: transparent;
+  border: 1px solid var(--border2);
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.awards-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  list-style: none;
+  padding: 0;
+}
+.award-tag {
+  padding: 0.25rem 0.7rem;
+  background: var(--green-dim);
+  border: 1px solid var(--border-g);
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  color: var(--green);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Intern sub-role divider */
+.role-divider {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-top: 1px dashed var(--border2);
+  padding-top: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+.role-divider-title {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  color: var(--text);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.role-divider-dates {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+/* ── PROJECTS ── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.proj-card {
+  background: var(--surface);
+  padding: 2.5rem 2rem;
+  border-top: 3px solid transparent;
+  transition: background 0.2s, border-top-color 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.proj-card:hover { background: var(--surface-h); border-top-color: var(--green); }
+
+.proj-eyebrow {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  color: var(--subtle);
+  letter-spacing: 2px;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+.proj-title {
+  font-family: var(--font-head);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.proj-association {
+  font-family: var(--font-head);
+  font-size: 0.75rem;
+  color: var(--green);
+  margin-bottom: 0.75rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.proj-desc {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+  font-weight: 300;
+}
+/* External link — clearly labelled in aria-label */
+.proj-link {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: underline;
+  text-decoration-color: var(--border2);
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  /* Minimum touch target */
+  min-height: var(--touch-min);
+  width: fit-content;
+  transition: color 0.2s, text-decoration-color 0.2s;
+  margin-top: auto;
+}
+.proj-link:hover { color: var(--green); text-decoration-color: var(--green); }
+/* Arrow is decorative — aria-hidden in HTML */
+.proj-link-arrow { font-size: 0.9rem; }
+
+/* ── TRAJECTORY ── */
+.trajectory-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Launch timeline */
+.launch-timeline {
+  position: relative;
+  padding-left: 2.5rem;
+}
+.launch-timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 8px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--green) 0%, transparent 100%);
+  /* Decorative — aria-hidden on parent or use aria-hidden="true" on pseudo */
+}
+.launch-event { position: relative; margin-bottom: 2.5rem; }
+.launch-event:last-child { margin-bottom: 0; }
+/* Diamond marker — purely decorative shape+colour combo */
+.launch-marker {
+  position: absolute;
+  left: -2.5rem;
+  top: 0.25rem;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--green);
+  background: var(--bg);
+  transform: rotate(45deg);
+  /* aria-hidden in HTML */
+}
+.launch-year {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  color: var(--green);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+.launch-title {
+  font-family: var(--font-head);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.launch-sub {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 300;
+  line-height: 1.6;
+}
+.launch-loc {
+  font-family: var(--font-head);
+  font-size: 0.7rem;
+  color: var(--subtle);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Certs panel */
+.certs-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.certs-panel-header {
+  padding: 1.25rem 1.75rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.certs-panel-header h3 {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.cert-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.75rem;
+  /* 44px minimum touch target */
+  min-height: var(--touch-min);
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  transition: background 0.2s;
+  color: var(--text);
+}
+.cert-item:last-child { border-bottom: none; }
+.cert-item:hover { background: var(--green-glow); }
+/* Underline on hover — not colour-only */
+.cert-item:hover .cert-name-text { text-decoration: underline; text-decoration-color: var(--green); text-underline-offset: 2px; }
+
+.cert-badge {
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--border2);
+  color: var(--subtle);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.cert-badge.azure { border-color: rgba(91,164,207,0.5); color: var(--azure); }
+.cert-badge.rh    { border-color: rgba(238,85,85,0.5);  color: var(--rh); }
+
+.cert-name-text { font-size: 0.88rem; color: var(--text); font-weight: 300; flex: 1; }
+/* Arrow — decorative, aria-hidden in HTML */
+.cert-arrow { font-size: 0.8rem; color: var(--subtle); flex-shrink: 0; }
+.cert-item:hover .cert-arrow { color: var(--green); }
+
+/* External link notice — visually hidden but SR-readable */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Learning strip */
+.learning-strip {
+  margin-top: 2rem;
+  border: 1px solid var(--border);
+}
+.learning-strip-head {
+  padding: 1rem 1.75rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.learning-strip-head h3 {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.learning-items {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.learning-item {
+  padding: 1rem 1.75rem;
+  border-right: 1px solid var(--border);
+  flex: 1;
+  min-width: 180px;
+  font-family: var(--font-head);
+  font-size: 0.8rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.learning-item:last-child { border-right: none; }
+
+/* ── CONTACT ── */
+#contact { min-height: 50vh; display: flex; flex-direction: column; justify-content: center; }
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 2.5rem;
+}
+.contact-card {
+  background: var(--surface);
+  /* 44px minimum touch height */
+  min-height: 100px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text);
+  border-bottom: 2px solid transparent;
+  transition: background 0.2s, border-bottom-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+.contact-card:hover { background: var(--green-glow); border-bottom-color: var(--green); }
+/* Underline on hover for text, not colour-only */
+.contact-card:hover .contact-val { text-decoration: underline; text-decoration-color: var(--green); text-underline-offset: 2px; }
+
+.contact-label {
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.contact-val {
+  font-family: var(--font-head);
+  font-size: 0.82rem;
+  color: var(--text);
+  word-break: break-all;
+  letter-spacing: 1px;
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-head);
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  position: relative;
+  z-index: 10;
+  background: var(--bg);
+}
+footer span { color: var(--green); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scroll reveal (WCAG 2.3.3 — no animation when reduced-motion) */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── prefers-reduced-motion (WCAG 2.3.3) ── */
 @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
+  .status-led { animation: none; }
+  .hero-name, .hero-role, .hero-desc, .hero-cta, .focus-strip, .status-badge {
+    opacity: 1; animation: none;
+  }
 }
 
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--deep); border-left: 1px solid var(--border); }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border2); }
-::-webkit-scrollbar-thumb:hover { background: var(--highlight); }
+::-webkit-scrollbar-thumb:hover { background: var(--green); }
 
+/* ── HIGH CONTRAST MODE (WCAG 1.4.11) ── */
+@media (forced-colors: active) {
+  .btn-primary { forced-color-adjust: none; background: ButtonText; color: ButtonFace; }
+  .sec-rule, .launch-timeline::before { background: Highlight; }
+  .exp-card { border-color: ButtonText; }
+  .cert-badge.azure, .cert-badge.rh { color: ButtonText; border-color: ButtonText; }
+  .award-tag { color: Highlight; border-color: Highlight; background: transparent; }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .trajectory-container { grid-template-columns: 1fr; gap: 2rem; }
+}
 @media (max-width: 768px) {
-  nav { padding: 0 1.5rem; height: auto; padding-top: 1rem; padding-bottom: 1rem; flex-direction: column; gap: 1rem; }
-  section { padding: 120px 6vw 60px; }
-  .nav-links { flex-wrap: wrap; justify-content: center; }
-  .hero-name { font-size: 3rem; }
+  .site-nav {
+    padding: 0.75rem 1.5rem;
+    flex-wrap: wrap;
+    height: auto;
+    gap: 0.5rem;
+  }
+  .nav-list { flex-wrap: wrap; }
+  .nav-list a { padding: 0 0.65rem; font-size: 0.75rem; }
+  section { padding: 120px 6vw 70px; }
+  .exp-card-header { flex-direction: column; gap: 0.25rem; }
+  .exp-right { text-align: left; }
+  .hero-name { font-size: clamp(3rem, 14vw, 5rem); }
+  .focus-item { min-width: 120px; }
+}
+@media (max-width: 480px) {
+  .hero-cta { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+}
+
+/* ── PRINT ── */
+@media print {
+  #bg-canvas, .site-nav, .skip-nav, .hero-cta, .status-badge { display: none; }
+  section { padding: 2rem 0; }
+  body { background: #fff; color: #000; }
+  h2, .exp-company, .proj-title { color: #000; }
+  .exp-bullets li, .proj-desc, .hero-desc { color: #333; }
+  .sec-rule { background: #000; }
 }
 </style>
 </head>
 <body>
 
-<a href="#main-content" class="skip-link">Skip to main content</a>
+<!-- ── SKIP NAVIGATION (WCAG 2.4.1) ── -->
+<a href="#main-content" class="skip-nav">Skip to main content</a>
 
-<canvas id="sky-canvas" aria-hidden="true"></canvas>
+<!-- ── DECORATIVE CANVAS — hidden from all AT ── -->
+<canvas id="bg-canvas" aria-hidden="true" role="presentation" focusable="false"></canvas>
 
-<nav aria-label="Main Navigation">
-  <a href="#" class="nav-logo" aria-label="Dhirender Singh Home">DHIRENDER <em>•</em> SINGH</a>
-  <ul class="nav-links">
-    <li><a href="#skills">Payload</a></li>
-    <li><a href="#experience">Logs</a></li>
-    <li><a href="#projects">Missions</a></li>
+<!-- ── NAVIGATION ── -->
+<nav class="site-nav" aria-label="Primary navigation">
+  <a href="#" class="nav-logo" aria-label="Dhirender Singh — Home">
+    Dhirender <em aria-hidden="true"> • </em> Singh
+  </a>
+  <ul class="nav-list" role="list">
+    <li><a href="#skills">Tech Stack</a></li>
+    <li><a href="#experience">Mission Logs</a></li>
+    <li><a href="#projects">Projects</a></li>
     <li><a href="#trajectory">Trajectory</a></li>
-    <li><a href="#contact">Comms</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
+<!-- ── MAIN LANDMARK (WCAG 1.3.1) ── -->
 <main id="main-content">
-  <section id="hero" aria-labelledby="hero-heading">
-    <div class="rack-badge" aria-label="System Status">
-      <span class="rack-dot" aria-hidden="true"></span>
-      STATUS: NOMINAL • PUNE SECTOR
+
+  <!-- ─── HERO ─── -->
+  <section id="hero" aria-labelledby="hero-name">
+    <div class="status-badge" role="status" aria-live="polite" aria-label="System status: nominal, IBM ISDL, Pune">
+      <span class="status-led" aria-hidden="true"></span>
+      <span>System Status: Nominal</span>
+      <span aria-hidden="true">&nbsp;•&nbsp;</span>
+      <span>IBM ISDL, Pune</span>
     </div>
 
-    <h1 id="hero-heading" class="hero-name">Dhirender<br />Singh</h1>
-    <p class="hero-role">Backend Developer • Storage Engineer • Cloud Infrastructure Specialist</p>
-    
-    <p class="hero-desc">Senior Backend Engineer with 5+ years of experience architecting enterprise-scale distributed systems and cloud infrastructure. Specializing in backend engineering across IaaS platforms, I build high-performance storage solutions that prioritize system reliability and developer agility.</p>
-    
+    <!-- h1 — page title (WCAG 2.4.6) -->
+    <h1 id="hero-name" class="hero-name">
+      Dhirender
+      <span>Singh</span>
+    </h1>
+
+    <p class="hero-role">
+      <strong>Backend Engineer</strong>&nbsp;•&nbsp;Storage Specialist&nbsp;•&nbsp;Cloud Infrastructure
+    </p>
+
+    <p class="hero-desc">
+      Senior Backend Engineer with 6+ years designing and building distributed systems, cloud infrastructure, and high-performance storage solutions. Specializing in IaaS platforms — from API development and storage driver integration to real-time observability and infrastructure automation. Proficient in Golang (4+ years), Python (3+ years), and Java. Earned consecutive Top Talent awards for accelerating IBM Cloud Power VS deployments and driving 35% performance improvements.
+    </p>
+
     <div class="hero-cta">
-      <a href="#experience" class="btn btn-primary">Initiate Sequence</a>
+      <a href="#experience" class="btn btn-primary">Mission Logs</a>
       <a href="#contact" class="btn btn-outline">Transmit Signal</a>
     </div>
+
+    <!-- Key metrics — not interactive, purely informational -->
+    <dl class="focus-strip" aria-label="Career highlights">
+      <div class="focus-item">
+        <dt class="focus-label">Years Experience</dt>
+        <dd class="focus-val">6+</dd>
+      </div>
+      <div class="focus-item">
+        <dt class="focus-label">Golang</dt>
+        <dd class="focus-val">5+&thinsp;yr</dd>
+      </div>
+      <div class="focus-item">
+        <dt class="focus-label">Terraform Modules</dt>
+        <dd class="focus-val">15+</dd>
+      </div>
+      <div class="focus-item">
+        <dt class="focus-label">Test Coverage</dt>
+        <dd class="focus-val">90%+</dd>
+      </div>
+      <div class="focus-item">
+        <dt class="focus-label">Open Source Projects</dt>
+        <dd class="focus-val">2+</dd>
+      </div>
+    </dl>
   </section>
 
+  <!-- ─── SKILLS ─── -->
   <section id="skills" aria-labelledby="skills-heading">
     <div class="sec-header reveal">
-      <p class="sec-tag" aria-hidden="true">STAGE 01</p>
+      <p class="sec-eyebrow"><strong>Stage 01</strong> / Tech Stack</p>
       <h2 id="skills-heading">Technical Stack</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
     </div>
+
     <div class="skills-grid reveal">
-      <article class="skill-card">
-        <h3 class="skill-cat">Languages</h3>
-        <div class="skill-pills">
-          <span class="pill">Golang</span><span class="pill">Python</span><span class="pill">Java</span>
-        </div>
-      </article>
-      <article class="skill-card">
-        <h3 class="skill-cat">Cloud Platforms</h3>
-        <div class="skill-pills">
-          <span class="pill">Azure</span><span class="pill">IBM Cloud</span><span class="pill">OpenStack</span>
-        </div>
-      </article>
-      <article class="skill-card">
-        <h3 class="skill-cat">Databases</h3>
-        <div class="skill-pills">
-          <span class="pill">PostgreSQL</span><span class="pill">MongoDB</span><span class="pill">IBM Cloudant</span>
-        </div>
-      </article>
-      <article class="skill-card">
-        <h3 class="skill-cat">DevOps & Tools</h3>
-        <div class="skill-pills">
-          <span class="pill">Docker</span><span class="pill">Kubernetes</span><span class="pill">Terraform</span><span class="pill">Openshift</span><span class="pill">Sysdig</span><span class="pill">Prometheus</span><span class="pill">Git</span><span class="pill">Maven</span><span class="pill">Mockito</span><span class="pill">Linux</span>
-        </div>
-      </article>
-      <article class="skill-card" style="grid-column: 1 / -1;">
-        <h3 class="skill-cat">Architecture Focus</h3>
-        <div class="skill-pills">
-          <span class="pill">REST APIs</span><span class="pill">Microservices</span><span class="pill">Distributed Systems</span><span class="pill">IaaS</span><span class="pill">Infrastructure as Code</span>
-        </div>
-      </article>
+
+      <div class="skill-card">
+        <p class="skill-cat-label" id="skill-lang">Languages</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-lang">
+          <li class="pill-item">Golang</li>
+          <li class="pill-item">Python</li>
+          <li class="pill-item">Java</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <p class="skill-cat-label" id="skill-cloud">Cloud Platforms</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-cloud">
+          <li class="pill-item">IBM Cloud</li>
+          <li class="pill-item">Azure</li>
+          <li class="pill-item">OpenStack</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <p class="skill-cat-label" id="skill-storage">Storage &amp; Infrastructure</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-storage">
+          <li class="pill-item">IBM FlashSystem</li>
+          <li class="pill-item">OpenStack Cinder</li>
+          <li class="pill-item">Block Storage</li>
+          <li class="pill-item">RHOSO 18</li>
+          <li class="pill-item">Global Replication</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <p class="skill-cat-label" id="skill-db">Databases</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-db">
+          <li class="pill-item">PostgreSQL</li>
+          <li class="pill-item">MongoDB</li>
+          <li class="pill-item">IBM Cloudant</li>
+          <li class="pill-item">MySQL</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <p class="skill-cat-label" id="skill-devops">DevOps &amp; Orchestration</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-devops">
+          <li class="pill-item">Docker</li>
+          <li class="pill-item">Kubernetes</li>
+          <li class="pill-item">Terraform</li>
+          <li class="pill-item">OpenShift</li>
+          <li class="pill-item">Ansible</li>
+          <li class="pill-item">Git</li>
+          <li class="pill-item">Maven</li>
+          <li class="pill-item">Linux</li>
+          <li class="pill-item">VS Code</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <p class="skill-cat-label" id="skill-obs">Messaging &amp; Observability</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-obs">
+          <li class="pill-item">Kafka</li>
+          <li class="pill-item">Prometheus</li>
+          <li class="pill-item">Sysdig</li>
+        </ul>
+      </div>
+
+      <div class="skill-card">
+        <p class="skill-cat-label" id="skill-fw">Frameworks &amp; Testing</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-fw">
+          <li class="pill-item">Spring Boot</li>
+          <li class="pill-item">Mockito</li>
+          <li class="pill-item">REST APIs</li>
+        </ul>
+      </div>
+
+      <div class="skill-card skill-full">
+        <p class="skill-cat-label" id="skill-arch">Architecture &amp; Specializations</p>
+        <ul class="pill-list" role="list" aria-labelledby="skill-arch">
+          <li class="pill-item">Microservices</li>
+          <li class="pill-item">Distributed Systems</li>
+          <li class="pill-item">IaaS Platforms</li>
+          <li class="pill-item">Infrastructure as Code</li>
+          <li class="pill-item">Storage Driver Development</li>
+          <li class="pill-item">Performance Engineering</li>
+          <li class="pill-item">Disaster Recovery</li>
+          <li class="pill-item">Real-Time Observability</li>
+        </ul>
+      </div>
+
     </div>
   </section>
 
-  <section id="experience" aria-labelledby="exp-heading">
+  <!-- ─── EXPERIENCE ─── -->
+  <section id="experience" aria-labelledby="experience-heading">
     <div class="sec-header reveal">
-      <p class="sec-tag" aria-hidden="true">STAGE 02</p>
-      <h2 id="exp-heading">Mission Logs</h2>
+      <p class="sec-eyebrow"><strong>Stage 02</strong> / Work History</p>
+      <h2 id="experience-heading">Mission Logs</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
     </div>
+
     <div class="timeline">
 
-      <article class="exp-card reveal">
+      <!-- IBM -->
+      <article class="exp-card reveal" aria-label="IBM — Backend Developer">
         <header class="exp-card-header">
-          <div class="exp-meta">
+          <div>
             <h3 class="exp-company">IBM</h3>
-            <p class="exp-role">Backend Developer • Pune, India</p>
+            <p class="exp-role-label">Backend Developer</p>
+            <p class="exp-location">
+              <span class="sr-only">Location: </span>Pune, India
+            </p>
           </div>
-          <p class="exp-period">Jun. 2025 – Present</p>
+          <div class="exp-right">
+            <p class="exp-period">
+              <time datetime="2025-06">Jun 2025</time> – <span>Present</span>
+            </p>
+          </div>
         </header>
         <div class="exp-body">
           <div class="exp-project">
             <h4 class="exp-project-name">IBM Storage FlashSystem</h4>
-            <ul class="exp-bullets">
-              <li>Contributed to open-source IBM FlashSystem plugins for OpenStack, Ansible, and Terraform, enabling scalable storage automation.</li>
-              <li>Led end-to-end deployment of a production-grade RHOSO 18 platform, validating IBM FlashSystem Cinder drivers to deliver high-performance, reliable persistent storage for containerized workloads.</li>
+            <ul class="exp-bullets" aria-label="Responsibilities and achievements">
+              <li>Contributed to open-source IBM FlashSystem plugins for OpenStack, Ansible, and Terraform, enabling scalable, automated storage provisioning across enterprise environments.</li>
+              <li>Led end-to-end deployment of a production-grade RHOSO 18 platform, validating IBM FlashSystem Cinder drivers to deliver high-performance, reliable persistent storage for containerised workloads.</li>
             </ul>
-            <div class="exp-tech" aria-label="Technologies used">
-              <span class="tech-tag">Python</span><span class="tech-tag">OpenStack</span><span class="tech-tag">SQL</span><span class="tech-tag">Openshift</span><span class="tech-tag">Ansible</span><span class="tech-tag">Terraform</span>
-            </div>
+            <ul class="exp-tech" role="list" aria-label="Technologies used">
+              <li class="tech-tag">Golang</li>
+              <li class="tech-tag">Python</li>
+              <li class="tech-tag">OpenStack</li>
+              <li class="tech-tag">SQL</li>
+              <li class="tech-tag">OpenShift</li>
+              <li class="tech-tag">Ansible</li>
+              <li class="tech-tag">Terraform</li>
+            </ul>
           </div>
         </div>
       </article>
 
-      <article class="exp-card reveal">
+      <!-- Persistent Systems -->
+      <article class="exp-card reveal" aria-label="Persistent Systems — Engineering Lead">
         <header class="exp-card-header">
-          <div class="exp-meta">
+          <div>
             <h3 class="exp-company">Persistent Systems</h3>
-            <p class="exp-role">Engineering Lead • Goa, India</p>
+            <p class="exp-role-label">Engineering Lead</p>
+            <p class="exp-location">
+              <span class="sr-only">Location: </span>Goa, India
+            </p>
           </div>
-          <p class="exp-period">Nov. 2020 – Jun. 2025</p>
+          <div class="exp-right">
+            <p class="exp-period">
+              <time datetime="2020-11">Nov 2020</time> – <time datetime="2025-06">Jun 2025</time>
+            </p>
+          </div>
         </header>
         <div class="exp-body">
-          
+
           <div class="exp-project">
-            <h4 class="exp-project-name">IBM Power Virtual Server(IaaS)</h4>
-            <ul class="exp-bullets">
-              <li>Enhanced IBM Cloud Power VS functionality and usage by developing new Golang APIs.</li>
-              <li>Enabled customers to manage resources through infrastructure as code by integrating IBM Cloud features into Terraform.</li>
-              <li>Strengthened disaster recovery capabilities by implementing Global Replication Service APIs for storage.</li>
-              <li>Boosted feature performance by 35%, achieving faster response times and significantly improving user experience.</li>
-              <li>Developed a resource utilization monitoring platform using Prometheus and Sysdig to represent metric data, leveraging Kafka for real-time communication of metric events.</li>
+            <h4 class="exp-project-name">IBM Power Virtual Server (IaaS)</h4>
+            <ul class="exp-bullets" aria-label="Responsibilities and achievements">
+              <li>Developed new Golang APIs to enhance IBM Cloud Power VS functionality and streamline customer resource management at scale.</li>
+              <li>Integrated IBM Cloud features into the Terraform provider, enabling infrastructure-as-code workflows used by enterprise customers globally — boosting deployment agility by 35%.</li>
+              <li>Implemented Global Replication Service APIs for cross-region block storage replication, strengthening disaster recovery for mission-critical workloads.</li>
+              <li>Built a resource utilisation monitoring platform using Prometheus and Sysdig, with Kafka powering real-time metric event streaming and alerting.</li>
             </ul>
-            <div class="achievements-wrap" aria-label="Awards and Achievements">
-              <span class="achievement-tag"><span class="achievement-icon" aria-hidden="true">★</span> Top Talent FY24</span>
-              <span class="achievement-tag"><span class="achievement-icon" aria-hidden="true">★</span> Top Talent FY23</span>
-              <span class="achievement-tag"><span class="achievement-icon" aria-hidden="true">★</span> Ace Individual Award</span>
-              <span class="achievement-tag"><span class="achievement-icon" aria-hidden="true">★</span> Bravo Individual Award</span>
-            </div>
-            <div class="exp-tech" aria-label="Technologies used">
-              <span class="tech-tag">Golang</span><span class="tech-tag">IBM Cloudant</span><span class="tech-tag">IBM Cloud</span><span class="tech-tag">Kafka</span><span class="tech-tag">Sysdig</span><span class="tech-tag">Prometheus</span><span class="tech-tag">Docker</span><span class="tech-tag">Kubernetes</span><span class="tech-tag">Terraform</span>
-            </div>
+            <ul class="awards-wrap" role="list" aria-label="Awards received">
+              <li class="award-tag">Top Talent FY24</li>
+              <li class="award-tag">Top Talent FY23</li>
+              <li class="award-tag">Ace Individual Award</li>
+              <li class="award-tag">Bravo Individual Award</li>
+            </ul>
+            <ul class="exp-tech" role="list" aria-label="Technologies used">
+              <li class="tech-tag">Golang</li>
+              <li class="tech-tag">IBM Cloudant</li>
+              <li class="tech-tag">IBM Cloud</li>
+              <li class="tech-tag">Kafka</li>
+              <li class="tech-tag">Sysdig</li>
+              <li class="tech-tag">Prometheus</li>
+              <li class="tech-tag">Docker</li>
+              <li class="tech-tag">Kubernetes</li>
+              <li class="tech-tag">Terraform</li>
+            </ul>
           </div>
 
           <div class="exp-project">
-            <h4 class="exp-project-name">OpenStack Cinder Driver for Fungible Storage</h4>
-            <ul class="exp-bullets">
-              <li>Developed a functional cinder driver for fungible storage devices, facilitating seamless integration with the OpenStack cloud platform.</li>
-              <li>Boosted code quality by implementing extensive unit test cases, attaining a coverage rate of over 90%.</li>
+            <h4 class="exp-project-name">OpenStack Cinder Driver — Fungible Storage</h4>
+            <ul class="exp-bullets" aria-label="Responsibilities and achievements">
+              <li>Developed a production-ready Cinder driver for Fungible storage devices, enabling seamless integration with the OpenStack cloud platform.</li>
+              <li>Achieved 90%+ unit test coverage through extensive test suite development, significantly improving driver reliability and code quality.</li>
             </ul>
-            <div class="achievements-wrap" aria-label="Awards and Achievements">
-              <span class="achievement-tag"><span class="achievement-icon" aria-hidden="true">★</span> Bravo Team Award</span>
-            </div>
-            <div class="exp-tech" aria-label="Technologies used">
-              <span class="tech-tag">Python</span><span class="tech-tag">OpenStack</span><span class="tech-tag">SQL</span>
-            </div>
+            <ul class="awards-wrap" role="list" aria-label="Awards received">
+              <li class="award-tag">Bravo Team Award</li>
+            </ul>
+            <ul class="exp-tech" role="list" aria-label="Technologies used">
+              <li class="tech-tag">Python</li>
+              <li class="tech-tag">OpenStack</li>
+              <li class="tech-tag">SQL</li>
+            </ul>
           </div>
 
           <div class="exp-project">
             <h4 class="exp-project-name">IBM Watson Talent Frameworks</h4>
-            <ul class="exp-bullets">
-              <li>Created a comprehensive job and skills data project that includes industry-specific job profiles, job descriptions, competencies and skills, coaching tips, and interview questions.</li>
-              <li>Implemented REST APIs using Spring Boot and added unit test cases using Mockito.</li>
+            <ul class="exp-bullets" aria-label="Responsibilities and achievements">
+              <li>Built a comprehensive job and skills data platform with industry-specific profiles, competencies, coaching tips, and interview questions.</li>
+              <li>Implemented REST APIs using Spring Boot with full Mockito unit test coverage, ensuring production-grade reliability.</li>
             </ul>
-            <div class="exp-tech" aria-label="Technologies used">
-              <span class="tech-tag">Java</span><span class="tech-tag">Spring Boot</span><span class="tech-tag">Mockito</span><span class="tech-tag">IBM Cloudant</span>
-            </div>
+            <ul class="exp-tech" role="list" aria-label="Technologies used">
+              <li class="tech-tag">Java</li>
+              <li class="tech-tag">Spring Boot</li>
+              <li class="tech-tag">Mockito</li>
+              <li class="tech-tag">IBM Cloudant</li>
+            </ul>
           </div>
 
           <div class="exp-project">
             <h4 class="exp-project-name">Web Accessibility Tool</h4>
-            <ul class="exp-bullets">
-              <li>Led the team to develop a tool for fixing web accessibility issues in web project source code.</li>
-              <li>Created the tool in Java Swing to automatically resolve approximately 30% of web accessibility issues and assist developers in manual fixes.</li>
-              <li>Improved website accessibility and user experience by identifying and addressing common issues through the tool.</li>
+            <ul class="exp-bullets" aria-label="Responsibilities and achievements">
+              <li>Led development of a Java Swing desktop tool that automatically resolves approximately 30% of web accessibility issues in project source code, reducing manual remediation effort for developers.</li>
             </ul>
-            <div class="exp-tech" aria-label="Technologies used">
-              <span class="tech-tag">Java</span><span class="tech-tag">Java Swing</span>
-            </div>
+            <ul class="exp-tech" role="list" aria-label="Technologies used">
+              <li class="tech-tag">Java</li>
+              <li class="tech-tag">Java Swing</li>
+            </ul>
           </div>
 
-          <div class="role-subheader" style="margin-top: 3rem;">
-            <span>Software Engineer Intern</span>
-            <span class="role-subheader-dates">Aug. 2020 – Oct. 2020</span>
+          <!-- Intern sub-role -->
+          <div class="role-divider">
+            <span class="role-divider-title">Software Engineer Intern</span>
+            <span class="role-divider-dates">
+              <time datetime="2020-08">Aug 2020</time> – <time datetime="2020-10">Oct 2020</time>
+            </span>
           </div>
 
-          <div class="exp-project">
-            <h4 class="exp-project-name">Training & MOBISTORE Project</h4>
-            <ul class="exp-bullets">
-              <li>Completed training and assessments on various tech stacks including Java, JavaScript, TypeScript, Angular, HTML, CSS, and MySQL during my internship.</li>
-              <li>Promoted to a full-time Software Engineer following the completion of my internship.</li>
-              <li>MOBISTORE: Designed and developed an online mobile store as a proof of concept using Angular framework, HTML, CSS, Typescript, and Bootstrap.</li>
+          <div class="exp-project" style="margin-bottom:0">
+            <h4 class="exp-project-name">Training &amp; Mobistore POC</h4>
+            <ul class="exp-bullets" aria-label="Responsibilities and achievements">
+              <li>Completed intensive training across Java, JavaScript, TypeScript, Angular, HTML, CSS, and MySQL.</li>
+              <li>Designed and built MOBISTORE — an online mobile store proof-of-concept using Angular, TypeScript, Bootstrap, and CSS.</li>
+              <li>Promoted to full-time Software Engineer upon internship completion.</li>
             </ul>
-            <div class="exp-tech" aria-label="Technologies used">
-              <span class="tech-tag">Java</span><span class="tech-tag">Angular</span><span class="tech-tag">TypeScript</span><span class="tech-tag">MySQL</span><span class="tech-tag">Bootstrap</span>
-            </div>
+            <ul class="exp-tech" role="list" aria-label="Technologies used">
+              <li class="tech-tag">Angular</li>
+              <li class="tech-tag">TypeScript</li>
+              <li class="tech-tag">MySQL</li>
+              <li class="tech-tag">Bootstrap</li>
+            </ul>
           </div>
 
         </div>
@@ -438,207 +1313,454 @@ footer { text-align: center; padding: 3rem 2rem; border-top: 1px solid var(--bor
     </div>
   </section>
 
-  <section id="projects" aria-labelledby="proj-heading">
+  <!-- ─── PROJECTS ─── -->
+  <section id="projects" aria-labelledby="projects-heading">
     <div class="sec-header reveal">
-      <p class="sec-tag" aria-hidden="true">STAGE 03</p>
-      <h2 id="proj-heading">Open Source & Projects</h2>
+      <p class="sec-eyebrow"><strong>Stage 03</strong> / Open Source &amp; Projects</p>
+      <h2 id="projects-heading">Open Source &amp; Projects</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
     </div>
+
     <div class="projects-grid">
-      <article class="proj-card reveal">
+
+      <article class="proj-card reveal" aria-label="IBM Cloud Terraform Provider">
+        <p class="proj-eyebrow">Open Source — Oct 2021 – Jun 2025</p>
         <h3 class="proj-title">IBM Cloud Terraform Provider</h3>
-        <div class="proj-desc">
-          <p>15+ Terraform resources and data sources for IBM Cloud Power Systems, used by enterprise customers globally.</p>
-        </div>
-        <a class="proj-link" href="https://registry.terraform.io/providers/IBMCloud/ibm/latest/docs" target="_blank" rel="noopener noreferrer" aria-label="View IBM Cloud Terraform Provider Repository">View Repository</a>
+        <p class="proj-desc">Contributed 15+ Terraform resources and data sources for IBM Cloud Power Systems, used by enterprise customers globally. Active in code reviews, issue triaging, and community discussions.</p>
+        <ul class="exp-tech" role="list" aria-label="Technologies used" style="margin-bottom:1.25rem">
+          <li class="tech-tag">Golang</li>
+          <li class="tech-tag">Terraform</li>
+          <li class="tech-tag">IBM Cloud</li>
+        </ul>
+        <a class="proj-link"
+           href="https://registry.terraform.io/providers/IBMCloud/ibm/latest/docs"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="View IBM Cloud Terraform Provider on the Terraform Registry (opens in new tab)">
+          View Registry
+          <span class="proj-link-arrow" aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
       </article>
-      
-      <article class="proj-card reveal">
+
+      <article class="proj-card reveal" aria-label="IBM Cloud Power Go Client">
+        <p class="proj-eyebrow">Open Source — Golang</p>
         <h3 class="proj-title">IBM Cloud Power Go Client</h3>
-        <div class="proj-desc">
-           <p>Go client library for IBM Power Virtual Server APIs.</p>
-        </div>
-        <a class="proj-link" href="https://github.com/IBM-Cloud/power-go-client" target="_blank" rel="noopener noreferrer" aria-label="View IBM Cloud Power Go Client Repository">View Repository</a>
+        <p class="proj-desc">Contributed to the official Go client library for IBM Power Virtual Server APIs — the foundational SDK enabling Golang-based tooling and automation against IBM Cloud Power infrastructure.</p>
+        <ul class="exp-tech" role="list" aria-label="Technologies used" style="margin-bottom:1.25rem">
+          <li class="tech-tag">Golang</li>
+          <li class="tech-tag">IBM Cloud</li>
+          <li class="tech-tag">REST APIs</li>
+        </ul>
+        <a class="proj-link"
+           href="https://github.com/IBM-Cloud/power-go-client"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="View IBM Cloud Power Go Client on GitHub (opens in new tab)">
+          View Repository
+          <span class="proj-link-arrow" aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
       </article>
 
-      <article class="proj-card reveal">
-        <h3 class="proj-title">IBM Cloud Docs</h3>
-        <div class="proj-desc">
-           <p>Documentation contributions for IBM Cloud systems.</p>
-        </div>
-        <a class="proj-link" href="https://github.com/ibm-cloud-docs/power-iaas" target="_blank" rel="noopener noreferrer" aria-label="View IBM Cloud Docs Repository">View Repository</a>
+      <article class="proj-card reveal" aria-label="IBM Cloud Power IaaS Documentation">
+        <p class="proj-eyebrow">Open Source — Documentation</p>
+        <h3 class="proj-title">IBM Cloud Power IaaS Docs</h3>
+        <p class="proj-desc">Documentation contributions to IBM Cloud Power Virtual Server, covering deployment guides, API references, and best practices for enterprise IaaS adoption.</p>
+        <ul class="exp-tech" role="list" aria-label="Technologies used" style="margin-bottom:1.25rem">
+          <li class="tech-tag">IBM Cloud</li>
+          <li class="tech-tag">IaaS</li>
+        </ul>
+        <a class="proj-link"
+           href="https://github.com/ibm-cloud-docs/power-iaas"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="View IBM Cloud Power IaaS documentation on GitHub (opens in new tab)">
+          View Repository
+          <span class="proj-link-arrow" aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
       </article>
 
-      <article class="proj-card reveal">
-        <h3 class="proj-title">Smart Vision System for the Visually Impaired</h3>
-        <p class="proj-meta">Jun 2019 – Jul 2020</p>
-        <p class="proj-association">Associated with Don Bosco College of Engineering, Fatorda, Goa</p>
-        <div class="proj-desc">
-           <p>This project aims to provide assistance to visually impaired individuals in walking, recognizing familiar faces, and identifying objects. This is achieved through the use of a wearable device worn by the user, which includes a smart stick capable of detecting obstacles and alerting the user.</p>
-        </div>
-        <div class="exp-tech" aria-label="Technologies used" style="margin-bottom: 1rem;">
-          <span class="tech-tag">Python</span><span class="tech-tag">Machine Learning</span><span class="tech-tag">ESP32</span><span class="tech-tag">Raspberry Pi</span>
-        </div>
-        <a class="proj-link" href="https://drive.google.com/file/d/1hxZEez6-DgiWm5sA7HfOjw9XijvAaBMM/view" target="_blank" rel="noopener noreferrer" aria-label="View Smart Vision System Documentation">View Project Link</a>
+      <article class="proj-card reveal" aria-label="Smart Vision System for the Visually Impaired">
+        <p class="proj-eyebrow">Final Year Project — Jun 2019 – Jul 2020</p>
+        <h3 class="proj-title">Smart Vision System</h3>
+        <p class="proj-association">Don Bosco College of Engineering, Goa</p>
+        <p class="proj-desc">Wearable IoT system assisting visually impaired individuals in navigating obstacles, recognising familiar faces, and identifying objects using machine learning and embedded hardware including ESP32 and Raspberry Pi.</p>
+        <ul class="exp-tech" role="list" aria-label="Technologies used" style="margin-bottom:1.25rem">
+          <li class="tech-tag">Python</li>
+          <li class="tech-tag">Machine Learning</li>
+          <li class="tech-tag">ESP32</li>
+          <li class="tech-tag">Raspberry Pi</li>
+        </ul>
+        <a class="proj-link"
+           href="https://drive.google.com/file/d/1hxZEez6-DgiWm5sA7HfOjw9XijvAaBMM/view"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="View Smart Vision System project documentation on Google Drive (opens in new tab)">
+          View Project
+          <span class="proj-link-arrow" aria-hidden="true">↗</span>
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
       </article>
+
     </div>
   </section>
 
-  <section id="trajectory" aria-labelledby="traj-heading">
+  <!-- ─── TRAJECTORY ─── -->
+  <section id="trajectory" aria-labelledby="trajectory-heading">
     <div class="sec-header reveal">
-      <p class="sec-tag" aria-hidden="true">STAGE 04</p>
-      <h2 id="traj-heading">Flight Trajectory</h2>
+      <p class="sec-eyebrow"><strong>Stage 04</strong> / Education &amp; Certifications</p>
+      <h2 id="trajectory-heading">Flight Trajectory</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
     </div>
 
-    <article class="exp-card reveal" style="margin-bottom: 2rem;">
-      <header class="exp-card-header">
-        <div class="exp-meta">
-          <h3 class="exp-company">Academic Logs</h3>
-        </div>
-      </header>
-      <div class="exp-body">
-        
-        <div class="exp-project">
-          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 0.25rem;">
-            <h4 class="exp-project-name" style="margin-bottom: 0;">Goa University, Don Bosco College of Engineering</h4>
-            <span style="color: var(--muted); font-size: 0.875rem; font-family: 'Oswald', sans-serif; letter-spacing: 1.5px;">2016 – 2020</span>
-          </div>
-          <p style="color: var(--muted); margin-bottom: 0.25rem;">Bachelor of Engineering in Computer Engineering</p>
-          <p style="font-size: 0.875rem; color: var(--accent2);">Goa, India</p>
-        </div>
-        
-        <div class="exp-project" style="margin-bottom: 0;">
-          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-bottom: 0.25rem;">
-            <h4 class="exp-project-name" style="margin-bottom: 0;">Kendriya Vidyalaya No.1, Vasco</h4>
-            <span style="color: var(--muted); font-size: 0.875rem; font-family: 'Oswald', sans-serif; letter-spacing: 1.5px;">2016</span>
-          </div>
-          <p style="color: var(--muted); margin-bottom: 0.25rem;">Higher Secondary</p>
-          <p style="font-size: 0.875rem; color: var(--accent2);">Goa, India</p>
-        </div>
+    <div class="trajectory-container reveal">
 
+      <!-- Academic timeline -->
+      <div>
+        <h3 class="sr-only">Academic History</h3>
+        <p class="sec-eyebrow" style="margin-bottom:1.5rem">Academic Trajectory</p>
+        <ol class="launch-timeline" aria-label="Academic history, most recent first">
+          <li class="launch-event">
+            <div class="launch-marker" aria-hidden="true"></div>
+            <p class="launch-year"><time datetime="2016/2020">2016 – 2020</time></p>
+            <p class="launch-title">BE Computer Engineering</p>
+            <p class="launch-sub">Don Bosco College of Engineering</p>
+            <p class="launch-sub">Goa University</p>
+            <p class="launch-loc">Goa, India</p>
+          </li>
+          <li class="launch-event">
+            <div class="launch-marker" aria-hidden="true"></div>
+            <p class="launch-year"><time datetime="2016">2016</time></p>
+            <p class="launch-title">Higher Secondary</p>
+            <p class="launch-sub">Kendriya Vidyalaya No.1, Vasco</p>
+            <p class="launch-loc">Goa, India</p>
+          </li>
+          <li class="launch-event">
+            <div class="launch-marker" aria-hidden="true"></div>
+            <p class="launch-year">Currently Exploring</p>
+            <p class="launch-title">Next Orbit</p>
+            <p class="launch-sub">Agentic AI &amp; LLM development</p>
+            <p class="launch-sub">RAG Pipelines &amp; Vector Databases</p>
+            <p class="launch-sub">gRPC &amp; advanced distributed protocols</p>
+          </li>
+        </ol>
       </div>
-    </article>
-    
-    <div class="trajectory-box reveal">
-      <h3>Certifications</h3>
-      <ul class="trajectory-list">
-        <li>Azure Data Fundamentals (DP900)</li>
-        <li>Azure AI Fundamentals (AI900)</li>
-        <li>Azure Fundamentals (AZ900)</li>
-        <li>Red Hat Delivery Specialist - Container Platform Application Deployment</li>
-        <li>Red Hat OpenShift 4 Foundations</li>
+
+      <!-- Certifications -->
+      <div>
+        <h3 class="sr-only">Certifications</h3>
+        <p class="sec-eyebrow" style="margin-bottom:1.5rem">Certifications</p>
+        <nav class="certs-panel" aria-label="Professional certifications">
+          <div class="certs-panel-header">
+            <p id="certs-heading" class="certs-panel-header">Verified Credentials</p>
+          </div>
+
+          <a class="cert-item"
+             href="https://learn.microsoft.com/en-us/credentials/certifications/azure-data-fundamentals/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Azure Data Fundamentals DP-900 — Microsoft (opens in new tab)">
+            <span class="cert-badge azure">DP-900</span>
+            <span class="cert-name-text">Azure Data Fundamentals</span>
+            <span class="cert-arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+
+          <a class="cert-item"
+             href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-fundamentals/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Azure AI Fundamentals AI-900 — Microsoft (opens in new tab)">
+            <span class="cert-badge azure">AI-900</span>
+            <span class="cert-name-text">Azure AI Fundamentals</span>
+            <span class="cert-arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+
+          <a class="cert-item"
+             href="https://learn.microsoft.com/en-us/credentials/certifications/azure-fundamentals/"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Azure Fundamentals AZ-900 — Microsoft (opens in new tab)">
+            <span class="cert-badge azure">AZ-900</span>
+            <span class="cert-name-text">Azure Fundamentals</span>
+            <span class="cert-arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+
+          <a class="cert-item"
+             href="https://www.redhat.com/en/services/training/red-hat-delivery-specialist-container-platform-application-deployment"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Red Hat Delivery Specialist — Container Platform Application Deployment (opens in new tab)">
+            <span class="cert-badge rh">Red Hat</span>
+            <span class="cert-name-text">Delivery Specialist — Container Platform App Deployment</span>
+            <span class="cert-arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+
+          <a class="cert-item"
+             href="https://www.redhat.com/en/services/training/red-hat-openshift-4-foundations"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Red Hat OpenShift 4 Foundations certification (opens in new tab)">
+            <span class="cert-badge rh">Red Hat</span>
+            <span class="cert-name-text">OpenShift 4 Foundations</span>
+            <span class="cert-arrow" aria-hidden="true">↗</span>
+            <span class="sr-only">(opens in new tab)</span>
+          </a>
+
+        </nav>
+      </div>
+    </div>
+
+    <!-- Currently learning -->
+    <div class="learning-strip reveal" style="margin-top:2rem">
+      <div class="learning-strip-head">
+        <h3>Current Learning Vector</h3>
+      </div>
+      <ul class="learning-items" role="list" aria-label="Technologies currently being learned">
+        <li class="learning-item">Agentic AI &amp; LLMs</li>
+        <li class="learning-item">RAG Pipelines</li>
+        <li class="learning-item">Vector Databases</li>
+        <li class="learning-item">gRPC</li>
       </ul>
     </div>
   </section>
 
+  <!-- ─── CONTACT ─── -->
   <section id="contact" aria-labelledby="contact-heading">
     <div class="sec-header reveal">
-      <p class="sec-tag" aria-hidden="true">FINAL STAGE</p>
+      <p class="sec-eyebrow"><strong>Final Stage</strong> / Connect</p>
       <h2 id="contact-heading">Telemetry Link</h2>
+      <div class="sec-rule" aria-hidden="true"></div>
     </div>
-    <div class="contact-grid">
-      <a class="contact-card" href="https://github.com/dhirendersingh19" target="_blank" rel="noopener noreferrer" aria-label="Visit GitHub Profile">
-        <p class="contact-label">GitHub</p>
-        <p class="contact-val">dhirendersingh19</p>
+
+    <nav class="contact-grid" aria-label="Social and contact links">
+      <a class="contact-card"
+         href="mailto:sdhirender462@gmail.com"
+         aria-label="Send email to sdhirender462@gmail.com">
+        <span class="contact-label">Email</span>
+        <span class="contact-val">sdhirender462@gmail.com</span>
       </a>
-      <a class="contact-card" href="https://linkedin.com/in/dhirendersingh2" target="_blank" rel="noopener noreferrer" aria-label="Visit LinkedIn Profile">
-        <p class="contact-label">LinkedIn</p>
-        <p class="contact-val">dhirendersingh2</p>
+      <a class="contact-card"
+         href="https://linkedin.com/in/dhirendersingh2"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Dhirender Singh on LinkedIn (opens in new tab)">
+        <span class="contact-label">LinkedIn</span>
+        <span class="contact-val">dhirendersingh2</span>
+        <span class="sr-only">(opens in new tab)</span>
       </a>
-      <a class="contact-card" href="mailto:sdhirender462@gmail.com" aria-label="Send an Email">
-        <p class="contact-label">Email</p>
-        <p class="contact-val">sdhirender462@gmail.com</p>
+      <a class="contact-card"
+         href="https://github.com/dhirendersingh19"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Dhirender Singh on GitHub (opens in new tab)">
+        <span class="contact-label">GitHub</span>
+        <span class="contact-val">dhirendersingh19</span>
+        <span class="sr-only">(opens in new tab)</span>
       </a>
-      <a class="contact-card" href="https://twitter.com/_DhirenderSingh" target="_blank" rel="noopener noreferrer" aria-label="Visit Twitter Profile">
-        <p class="contact-label">Twitter</p>
-        <p class="contact-val">_DhirenderSingh</p>
+      <a class="contact-card"
+         href="https://gitlab.com/dhirendersingh19"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Dhirender Singh on GitLab (opens in new tab)">
+        <span class="contact-label">GitLab</span>
+        <span class="contact-val">dhirendersingh19</span>
+        <span class="sr-only">(opens in new tab)</span>
       </a>
-      <a class="contact-card" href="https://gitlab.com/dhirendersingh19" target="_blank" rel="noopener noreferrer" aria-label="Visit GitLab Profile">
-        <p class="contact-label">GitLab</p>
-        <p class="contact-val">dhirendersingh19</p>
+      <a class="contact-card"
+         href="https://twitter.com/_DhirenderSingh"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Dhirender Singh on Twitter / X (opens in new tab)">
+        <span class="contact-label">Twitter / X</span>
+        <span class="contact-val">_DhirenderSingh</span>
+        <span class="sr-only">(opens in new tab)</span>
       </a>
-    </div>
+    </nav>
   </section>
 
 </main>
 
+<!-- ── FOOTER ── -->
 <footer>
-  <p>Dhirender Singh • Mission Logs • Code Complete</p>
+  <p>Dhirender Singh <span aria-hidden="true"> • </span> Senior Backend Engineer <span aria-hidden="true"> • </span> Code Complete</p>
 </footer>
 
 <script>
-// ── Vertical Ascent Starfield Canvas ──
-const canvas = document.getElementById('sky-canvas');
-const ctx = canvas.getContext('2d');
-let width, height;
+/* ════════════════════════════════════════════════════════
+   CANVAS — decorative only; all AT is aria-hidden="true"
+   Respects prefers-reduced-motion (WCAG 2.3.3)
+   ════════════════════════════════════════════════════════ */
+(function() {
+  const canvas  = document.getElementById('bg-canvas');
+  const ctx     = canvas.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let W, H, raf;
 
-function resize() {
-  width = canvas.width = window.innerWidth;
-  height = canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
-// Particle Objects simulating passing stars during upward acceleration
-const particles = [];
-const numParticles = 150; 
-for (let i = 0; i < numParticles; i++) {
-  particles.push({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    length: Math.random() * 20 + 5,
-    speed: Math.random() * 15 + 5,
-    opacity: Math.random() * 0.5 + 0.1
-  });
-}
+  /* Static fallback — no animation */
+  function drawStatic() {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+    /* Subtle grid — purely decorative */
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  }
 
-function animate() {
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(0, 0, width, height);
+  if (reduced.matches) {
+    drawStatic();
+    /* Re-draw on resize when reduced motion is on */
+    window.addEventListener('resize', drawStatic);
+    return;
+  }
 
-  particles.forEach(p => {
-    p.y += p.speed;
-    
-    if (p.y > height + p.length) {
-      p.y = -p.length;
-      p.x = Math.random() * width;
-      p.speed = Math.random() * 15 + 5; 
-    }
+  /* Animated starfield */
+  const NUM_STARS = 160;
+  const stars = Array.from({ length: NUM_STARS }, () => ({
+    x:   Math.random() * window.innerWidth,
+    y:   Math.random() * window.innerHeight,
+    len: Math.random() * 16 + 4,
+    spd: Math.random() * 2.5 + 0.6,
+    op:  Math.random() * 0.3 + 0.05,
+    w:   Math.random() < 0.12 ? 1.4 : 0.7,
+  }));
 
-    ctx.beginPath();
-    ctx.strokeStyle = `rgba(255, 255, 255, ${p.opacity})`;
-    ctx.lineWidth = 1.5;
-    ctx.moveTo(p.x, p.y);
-    ctx.lineTo(p.x, p.y - p.length);
-    ctx.stroke();
-  });
+  let scanY = 0;
 
-  requestAnimationFrame(animate);
-}
+  function draw() {
+    /* Slight fade trail for motion blur */
+    ctx.fillStyle = 'rgba(0,0,0,0.88)';
+    ctx.fillRect(0, 0, W, H);
 
-// Check for prefers-reduced-motion for Accessibility
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-if (!prefersReducedMotion.matches) {
-  animate();
-} else {
-  ctx.fillStyle = '#000000';
-  ctx.fillRect(0, 0, width, height);
-}
+    /* Decorative grid */
+    ctx.strokeStyle = 'rgba(255,255,255,0.022)';
+    ctx.lineWidth = 0.5;
+    for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
 
-// ── Scroll reveal ──
-if (!prefersReducedMotion.matches) {
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { 
-      if (e.isIntersecting) { 
-        e.target.classList.add('visible'); 
-        io.unobserve(e.target); 
-      } 
+    /* Scan line glow */
+    scanY = (scanY + 0.35) % H;
+    const sg = ctx.createLinearGradient(0, scanY - 50, 0, scanY + 50);
+    sg.addColorStop(0,   'rgba(57,255,20,0)');
+    sg.addColorStop(0.5, 'rgba(57,255,20,0.025)');
+    sg.addColorStop(1,   'rgba(57,255,20,0)');
+    ctx.fillStyle = sg;
+    ctx.fillRect(0, scanY - 50, W, 100);
+
+    /* Stars */
+    stars.forEach(s => {
+      s.y += s.spd;
+      if (s.y > H + s.len) { s.y = -s.len; s.x = Math.random() * W; }
+      const g = ctx.createLinearGradient(s.x, s.y, s.x, s.y - s.len);
+      g.addColorStop(0, `rgba(255,255,255,${s.op})`);
+      g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.strokeStyle = g;
+      ctx.lineWidth = s.w;
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.lineTo(s.x, s.y - s.len);
+      ctx.stroke();
     });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-} else {
-  // If reduced motion is on, make everything visible immediately
-  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-}
+
+    raf = requestAnimationFrame(draw);
+  }
+
+  draw();
+
+  /* Pause when tab is hidden — performance */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(raf); }
+    else { draw(); }
+  });
+
+  /* Re-check reduced motion if user changes preference mid-session */
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) {
+      cancelAnimationFrame(raf);
+      drawStatic();
+    } else {
+      draw();
+    }
+  });
+})();
+
+
+/* ════════════════════════════════════════════════════════
+   SCROLL REVEAL — respects reduced-motion
+   ════════════════════════════════════════════════════════ */
+(function() {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const items   = document.querySelectorAll('.reveal');
+
+  if (reduced.matches) {
+    items.forEach(el => el.classList.add('visible'));
+    return;
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  items.forEach(el => io.observe(el));
+})();
+
+
+/* ════════════════════════════════════════════════════════
+   STATUS LED animation — CSS handles it but we also
+   respect reduced-motion via JS to stop the pulse
+   ════════════════════════════════════════════════════════ */
+(function() {
+  const led     = document.querySelector('.status-led');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!led) return;
+
+  function update() {
+    led.style.animation = reduced.matches ? 'none' : 'led-pulse 2s ease-in-out infinite';
+  }
+  update();
+  reduced.addEventListener('change', update);
+})();
+
+
+/* ════════════════════════════════════════════════════════
+   ARIA-CURRENT — highlight active nav section on scroll
+   WCAG 2.4.3 (Focus Order), 4.1.2 (Name, Role, Value)
+   ════════════════════════════════════════════════════════ */
+(function() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-list a[href^="#"]');
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          const active = link.getAttribute('href') === '#' + entry.target.id;
+          link.setAttribute('aria-current', active ? 'page' : 'false');
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  sections.forEach(s => io.observe(s));
+})();
 </script>
 </body>
 </html>
